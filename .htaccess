@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+# That was ONLY to protect you from 500 errors
+# if your server did not have mod_rewrite enabled
+RewriteEngine On 
+
+RewriteCond %{THE_REQUEST} /public/([^\s?]*) [NC]
+RewriteRule ^ %1 [L,NE,R=302]
+
+RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
+
+</IfModule>
+
+<files “.htaccess”>
+order allow,deny
+deny from all
+</files>
+
+Options All -Indexes
+
