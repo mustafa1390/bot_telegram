@@ -1,5 +1,6 @@
 <?php
 
+use CURLFile;
 use App\Models\BotLog;
 use Illuminate\Support\Facades\Http;
 
@@ -166,7 +167,7 @@ if(! function_exists('uploadFile_bot') ) {
             $photo = end($data['message']['photo']); // Get the highest quality photo
             $file_id = $photo['file_id'];
 
-            // Use Telegram API to get the file path 
+            // Use Telegram API to get the file path
             $telegramToken = env('TELEGRAM_BOT_TOKEN');
             $file_info = file_get_contents("https://api.telegram.org/bot$telegramToken/getFile?file_id=$file_id");
             $file_info = json_decode($file_info, true);
@@ -195,5 +196,36 @@ if(! function_exists('uploadFile_bot') ) {
                 file_put_contents($fullPath . $filename, $file_contents);
             }
         }
+    }
+}
+
+if(! function_exists('movefile_irpay') ) {
+
+    function movefile_irpay($fileName)
+    {
+
+
+
+$imagePath = '/upload/telegram/';
+$filePath = public_path($imagePath.$fileName);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://irpay.pro/api/user/upload');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+
+curl_setopt($ch, CURLOPT_POSTFIELDS, [
+   'image' => new CURLFile($filePath, mime_content_type($filePath), $fileName),
+   'token' => 'Amer*&uioKOp345!ghJloPPde5&ds',
+]);
+// $response = curl_exec($ch);
+
+if (curl_errno($ch)) {
+   // echo 'no curl';
+} else {
+   // echo 'Ok';
+}
+// curl_close($ch);
+
+
     }
 }
