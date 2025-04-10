@@ -26,7 +26,11 @@ class BotNewTelegramController extends Controller
 $word = "test";
 
 if (strpos($text, $word) !== false) {
-    return $this->Reg_data($chatId);
+    $fileName = 'bb';
+if (isset($data['message']['photo'])) {
+    return $fileName = $this->photo($data);
+}
+    return $this->Reg_data($chatId,$fileName);
 } else {
 
 }
@@ -34,12 +38,6 @@ if (strpos($text, $word) !== false) {
         }
 
 
-
-if (isset($data['message']['photo'])) {
-
-    return $this->photo($data);
-
-}
 
         // Handle inline button click (callback query)
         if (isset($data['callback_query'])) {
@@ -90,8 +88,36 @@ if (isset($data['message']['photo'])) {
             'reply_markup' => json_encode($keyboard),
         ]);
     }
-    public function Reg_data($chatId)
+    public function Reg_data($chatId,$fileName)
     {
+
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://irpay.pro/api/user/store',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS => array('firstname' => 'moestafaa','lastname' => 'yooseffi','email' => 'mustafa13975@gmail.com',
+          'phonenum' => '09384762155','password' => '123456','verifyimg' => $fileName,'token' => 'Amer*&uioKOp345!ghJloPPde5&ds'),
+          CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer 321|2xMkRhkeWHrAcnBZPlmAtTqzg4KU3bhTgpViStoY4fa6ea0b'
+          ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        // echo $response;
+
+// echo $response;
+
 
                 $text_html = '<b><a href="#"> ثبت نام شما در سایت irpay با موفقیت انجام شد </a></b>';
                 $datan = [
@@ -147,6 +173,8 @@ if (isset($data['message']['photo'])) {
                         'text' => "📸 Your photo has been saved as: {$fileName}"
                     ]);
                 }
+
+                return $fileName;
             }
 
 
