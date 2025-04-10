@@ -21,7 +21,8 @@ class BotNewTelegramController extends Controller
 $word = "name";
 
 if (isset($data['message']) && isset($data['message']['photo']) && ($data['message']['caption']!=null)&&(strpos($data['message']['caption'], $word) !== false) ) {
-    return $fileName = $this->photo($data);
+     $fileName = $this->photo($data);
+     return movefile_irpay($fileName);
 }
 
         if (isset($data['message']) && isset($data['message']['text'])) {
@@ -169,8 +170,8 @@ if (isset($data['message']['photo'])) {
                     $contents = file_get_contents($fileUrl);
                     $fileName = basename($filePath);
 
-                    // $current_timestamp = \Carbon\Carbon::now()->timestamp;
-                    $current_timestamp = 'Me_';
+                    $current_timestamp = \Carbon\Carbon::now()->timestamp;
+                    // $current_timestamp = 'Me_';
                     $fileName =$current_timestamp.$fileName;
 
                     // uploadFile_bot($data);
@@ -186,9 +187,8 @@ if (isset($data['message']['photo'])) {
                         'text' => "📸 Your photo has been saved as: {$fileName}"
                     ]);
 
-                    // movefile_irpay($fileName);
 
- 
+
                 }
 
                 return $fileName;

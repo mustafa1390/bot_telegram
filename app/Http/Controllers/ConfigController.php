@@ -20,11 +20,36 @@ class ConfigController extends Controller
     Artisan::call('optimize:clear');
     Artisan::call('migrate');
 
+    // exec('composer dump-autoload');
 
 
+    // return movefile_irpay('Me_file_8.jpg');
 
-    exec('composer dump-autoload');
+    $fileName = '1744300222file_8.jpg';
+    $imagePath = '/public/upload/telegram/';
+    // $filePath = public_path($imagePath.$fileName);
+    // $filePath = $imagePath.$fileName;
 
+    $filePath = public_path('/upload/telegram/'.$fileName);
+
+    // dd($filePath);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://irpay.pro/api/user/upload');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+
+    curl_setopt($ch, CURLOPT_POSTFIELDS, [
+       'image' => new CURLFile($filePath, mime_content_type($filePath), $fileName),
+       'token' => 'Amer*&uioKOp345!ghJloPPde5&ds',
+    ]);
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+       echo 'no curl';
+    } else {
+       echo 'Ok';
+    }
+    curl_close($ch);
 
 
 

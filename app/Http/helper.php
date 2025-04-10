@@ -206,25 +206,32 @@ if(! function_exists('movefile_irpay') ) {
 
 
 
-$imagePath = '/upload/telegram/';
-$filePath = public_path($imagePath.$fileName);
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://irpay.pro/api/user/upload');
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
+        // $fileName = '1744300222file_8.jpg';
+        $imagePath = '/public/upload/telegram/';
+        // $filePath = public_path($imagePath.$fileName);
+        // $filePath = $imagePath.$fileName;
 
-curl_setopt($ch, CURLOPT_POSTFIELDS, [
-   'image' => new CURLFile($filePath, mime_content_type($filePath), $fileName),
-   'token' => 'Amer*&uioKOp345!ghJloPPde5&ds',
-]);
-// $response = curl_exec($ch);
+        $filePath = public_path('/upload/telegram/'.$fileName);
 
-if (curl_errno($ch)) {
-   // echo 'no curl';
-} else {
-   // echo 'Ok';
-}
-// curl_close($ch);
+        // dd($filePath);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://irpay.pro/api/user/upload');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+           'image' => new CURLFile($filePath, mime_content_type($filePath), $fileName),
+           'token' => 'Amer*&uioKOp345!ghJloPPde5&ds',
+        ]);
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+           echo 'no curl';
+        } else {
+           echo 'Ok';
+        }
+        curl_close($ch);
+
 
 
     }
