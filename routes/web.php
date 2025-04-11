@@ -23,8 +23,8 @@ Route::get('/', function () {
 
 Route::prefix('telegram')->name('telegram.')->group(function () {
     Route::get('/token', [BotTelegramController::class, 'token'])->name('token');
-    Route::post('/url_webhookk', [BotNewTelegramController::class, 'handleWebhook'])->name('handleWebhook');
-    // Route::post('/url_webhookk', [BotTelegramController::class, 'url_webhook'])->name('url_webhook');
+    Route::post('/url_webhookk2', [BotNewTelegramController::class, 'handleWebhook'])->name('handleWebhook');
+    Route::post('/url_webhookk', [BotTelegramController::class, 'url_webhook'])->name('url_webhook');
     Route::get('/set_webhook', [BotTelegramController::class, 'set_webhook'])->name('set_webhook');
     Route::get('/info_webhook', [BotTelegramController::class, 'info_webhook'])->name('info_webhook');
     Route::get('/get_update', [BotTelegramController::class, 'get_update'])->name('get_update');

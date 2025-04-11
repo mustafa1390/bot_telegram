@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Bot;
-
-use CURLFile;
+ 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
