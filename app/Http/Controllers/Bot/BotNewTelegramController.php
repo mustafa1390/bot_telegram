@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Bot;
- 
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
@@ -17,8 +17,7 @@ class BotNewTelegramController extends Controller
 
 
 
-$word = "name";
-
+$word = "name"; 
 if (isset($data['message']) && isset($data['message']['photo']) && ($data['message']['caption']!=null)&&(strpos($data['message']['caption'], $word) !== false) ) {
      $fileName = $this->photo($data);
      return movefile_irpay($fileName);
@@ -113,8 +112,10 @@ if (isset($data['message']['photo'])) {
           CURLOPT_FOLLOWLOCATION => true,
           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
           CURLOPT_CUSTOMREQUEST => 'POST',
-          CURLOPT_POSTFIELDS => array('firstname' => 'moestafaa','lastname' => 'yooseffi','email' => 'mustafa1388@gmail.com',
-          'phonenum' => '09384762155','password' => '123456','verifyimg' => $fileName,'token' => 'Amer*&uioKOp345!ghJloPPde5&ds'),
+          CURLOPT_POSTFIELDS => array('firstname' => 'moestafaa','lastname' => 'yooseffi',
+          'email' => 'mustafa1388@gmail.com',
+          'phonenum' => '09384762155','password' => '123456','verifyimg' => $fileName,'city' => 'bot',
+          'token' => 'Amer*&uioKOp345!ghJloPPde5&ds'),
           CURLOPT_HTTPHEADER => array(
             'Authorization: Bearer 321|2xMkRhkeWHrAcnBZPlmAtTqzg4KU3bhTgpViStoY4fa6ea0b'
           ),

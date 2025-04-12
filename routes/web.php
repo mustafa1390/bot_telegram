@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\Bot\BotNewTelegramController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConfigController;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use App\Http\Controllers\Bot\BotTelegramController;
+use App\Http\Controllers\Bot\BotNewTelegramController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +36,6 @@ Route::prefix('telegram')->name('telegram.')->group(function () {
 
 
 Route::get('/config_optimize', [ConfigController::class, 'config_optimize'])->name('config_optimize');
+
+
+ 

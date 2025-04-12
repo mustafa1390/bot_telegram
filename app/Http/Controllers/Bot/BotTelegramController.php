@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\BotLog;
+use App\Models\BotStatus;
 use App\Services\Telegram\BotTelegram;
 use Illuminate\Support\Facades\Http;
 
@@ -60,45 +61,71 @@ class BotTelegramController extends Controller
 
 
 
+    $bot_status = BotStatus::where([ ['id','=',1],   ])->orderBy('id', 'desc')->first();
+
     if(isset($data->callback_query)){
+        if(($data->callback_query->data=='register')&&($bot_status->register==1)){
+            $bot_status = BotStatus::where([ ['id','=',1], ['register','=',1], ])->update( ['register' => 0 ] );
+            // $telegram = new  BotTelegram();
+            // $output = $telegram->inline_cl($data,'back');
+            // $chat_id = $data->callback_query->id;
+            $chat_id = $data->callback_query->from->id;
+            // $chat_id = 166451980;
+            $text_html = "<b>لطفا اطلاعات ثبت نام را به فرمت صحیح وارد نمایید  {$chat_id}  </b>";
+    $data = [
+        'parse_mode'=>'HTML',
+        'text'=> $text_html,
+        'chat_id'=> $chat_id
+    ];
 
-        if($data->callback_query->data=='register'){
-            $telegram = new  BotTelegram();
-            $output = $telegram->inline_cl($data,'back');
+    $paramm = http_build_query($data);
+    $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
+    $result = Http::get($api_url);
         }
+    }
 
-        if($data->callback_query->data=='change'){
-            $telegram = new  BotTelegram();
-            $output = $telegram->inline_cl($data,'back');
-        }
-
-        // $back_chat_id = $data->callback_query->message->message_id;
-        $back_chat_id = $data->callback_query->from->id;
-        $bot_log = BotLog::where([ 'chat_id'=>$back_chat_id ])->first();
-
-        if($bot_log==null){
-        $text = $data->callback_query->data." _ ".$data->callback_query->id." _ ".$data->callback_query->from->id;
-        BotLog::create(['text'=>$text , 'chat_id'=>$back_chat_id ]);
-        }
-    }else{
-
-
+    if(isset($data->message)){
+    if(isset($data->message->text)){
         if($data->message->text=='/start'){
             $telegram = new  BotTelegram();
             $output = $telegram->menue_start($data );
+            $bot_status = BotStatus::where([ ['id','=',1],  ])->update( ['register' => 1 ] );
         }
+    //     $text_html = "<b>به ربات irpaybbbbb خوش آمدید   text: {$data->message->text} </b>";
 
-        if($data->message->text=='/starti'){
-            $telegram = new  BotTelegram();
-            $output = $telegram->inline_cl($data,'send');
-        }
-        if($data->message->text=='member'){
-            $telegram = new  BotTelegram();
-            $output = $telegram->inline_cl($data,'member');
-        }
+
+    //     $datan = [
+    //             'parse_mode'=>'HTML',
+    //             'text'=>  $text_html,
+    //             'chat_id'=> $data->message->chat->id
+    //         ];
+    //     $paramm = http_build_query($datan);
+    //     $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
+
+    // $result = Http::get($api_url);
 
 
     }
+
+
+    $bot_status = BotStatus::where([ ['id','=',1],   ])->orderBy('id', 'desc')->first();
+
+    $word = "name";
+    if (isset($data->message) && isset($data->message->photo) && ($data->message->caption!=null)
+    &&(strpos($data->message->caption, $word) !== false)&&($bot_status->registerdone==1) ) {
+        $mydata = $request->all();
+         $telegram = new  BotTelegram();
+         $fileName = $telegram->photo($mydata);
+        //  $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
+
+    }
+
+
+
+}
+
+
+
 
 
    }
@@ -158,7 +185,6 @@ class BotTelegramController extends Controller
     ];
 
     $paramm = http_build_query($data);
-
     $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
     // dd($api_url);
     $result = Http::get($api_url);
