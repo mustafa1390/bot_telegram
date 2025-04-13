@@ -1,5 +1,5 @@
 <?php
- 
+
 use App\Models\BotLog;
 use Illuminate\Support\Facades\Http;
 
@@ -200,9 +200,10 @@ if(! function_exists('uploadFile_bot') ) {
 
 if(! function_exists('movefile_irpay') ) {
 
-    function movefile_irpay($fileName)
+    function movefile_irpay($bot_user)
     {
 
+        $fileName = $bot_user->verifyimg;
 
 
         // $fileName = '1744300222file_8.jpg';
@@ -220,6 +221,7 @@ if(! function_exists('movefile_irpay') ) {
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
            'image' => new CURLFile($filePath, mime_content_type($filePath), $fileName),
+           'email' => $bot_user->email,
            'token' => 'Amer*&uioKOp345!ghJloPPde5&ds',
         ]);
         $response = curl_exec($ch);

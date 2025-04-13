@@ -4,7 +4,9 @@ namespace App\Services\Telegram;
 
 use GuzzleHttp\Psr7;
 use App\Models\BotLog;
+use App\Models\BotUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +18,7 @@ class BotTelegram
     public function __construct()
     {
 
-        $this->bot_token='7675274082:AAH2mrj9oM_A6t7sbqq_U1QfOhtHdKR3u9g';
+        $this->bot_token='7781792427:AAFG-TaLTWrPOm2SDUjUZBThkInaRByb1ks';
 
     }
 
@@ -32,12 +34,11 @@ class BotTelegram
             'resize_keyboard'=>true,
             'inline_keyboard'=>array(
                 array(
-                    array('text'=>'آدرس سایت','url'=>$url_news),array('text'=>'اینستاگرام',
-                    'url'=>"https://instagram.com/rezakarimpour.pro"),array('text'=>'گیت هاب','url'=>$url_news)
-                ), array(
-                    array('text'=>'گوگل 🔺️ ','url'=>"https://google.com"),
                     array('text'=>'بازگشت ↖️','callback_data'=>"back"),
                     array('text'=>'ثبت نام کاربر 🚹','callback_data'=>"register"),
+                ), array(
+                    array('text'=>'آدرس سایت 🌎','url'=>$url_news),
+                    array('text'=>'پشتیبانی تلگرام 📱', 'url'=>"https://t.me/irpay_net"),
                 )
             )
         );
@@ -72,7 +73,7 @@ class BotTelegram
     // if(isset($data->message->chat)){
     $result = Http::get($api_url);
     // }
-    BotLog::create(['text'=>$paramm , 'chat_id'=>$data->message->chat->id]);
+    // BotLog::create(['text'=>$paramm , 'chat_id'=>$data->message->chat->id]);
 
     }
     public function menue_start($data ){
@@ -84,12 +85,11 @@ class BotTelegram
             'resize_keyboard'=>true,
             'inline_keyboard'=>array(
                 array(
-                    array('text'=>'آدرس سایت','url'=>$url_news),array('text'=>'اینستاگرام',
-                    'url'=>"https://instagram.com/rezakarimpour.pro"),array('text'=>'گیت هاب','url'=>$url_news)
-                ), array(
-                    array('text'=>'گوگل 🔺️','url'=>"https://google.com"),
                     array('text'=>'بازگشت ↖️','callback_data'=>"back"),
                     array('text'=>'ثبت نام کاربر 🚹','callback_data'=>"register"),
+                ), array(
+                    array('text'=>'آدرس سایت 🌎','url'=>$url_news),
+                    array('text'=>'پشتیبانی تلگرام 📱', 'url'=>"https://t.me/irpay_net"),
                 )
             )
         );
@@ -115,7 +115,7 @@ class BotTelegram
     if(isset($data->message->chat)){
     $result = Http::get($api_url);
     }
-    BotLog::create(['text'=>$paramm , 'chat_id'=>$data->message->chat->id]);
+    // BotLog::create(['text'=>$paramm , 'chat_id'=>$data->message->chat->id]);
 
 
     }
@@ -124,7 +124,7 @@ class BotTelegram
     public function inline_cl($data,$buton){
 
 
-        $bot_token = '7675274082:AAH2mrj9oM_A6t7sbqq_U1QfOhtHdKR3u9g';
+        $bot_token = '7781792427:AAFG-TaLTWrPOm2SDUjUZBThkInaRByb1ks';
 
         if($buton!='back'){
             $chat_id = $data->message->chat->id;
@@ -205,7 +205,7 @@ class BotTelegram
             if(isset($data->message->chat)){
             $result = Http::get($api_url);
             }
-            BotLog::create(['text'=>$paramm , 'chat_id'=>$msg_id]);
+            // BotLog::create(['text'=>$paramm , 'chat_id'=>$msg_id]);
         }
 
 
@@ -307,6 +307,7 @@ $result = Http::get($api_url);
                 $chatId = $data['message']['chat']['id'];
                 // $chatId = $data['message']['chat']['from']['id'];
                 $photos = $data['message']['photo'];
+                $text = $data['message']['caption'];
 
                 // Get the highest-resolution version (last one)
                 $fileId = end($photos)['file_id'];
@@ -331,7 +332,6 @@ $result = Http::get($api_url);
 
                     // uploadFile_bot($data);
 
-                    Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
 
 
 
@@ -343,8 +343,52 @@ $result = Http::get($api_url);
                     // ]);
 
 
-            $text_html = "<b> تصویر با موفقیت
-            آپلود شد  saved as: {$fileName} </b>";
+
+
+// $text ="
+// Wallet ID 2647364
+// Full name نرگس ال کثیر (Narges Alkasir)
+// First Name نرگس
+// Last Name ال کثیر
+// Phone 989138660585
+// Email narges.alkasir585@gmail.com";
+
+
+$telegram = new  BotTelegram();
+$myarray = $telegram->parseUserData($text);
+$tt = preg_match('/^first name\s+(.*)$/im', $text, $matches);
+
+
+
+$useri = BotUser::where([ ['email',$myarray['email']], ])->first();
+
+if($useri){
+
+    $text_html = " 🔴 این کاربر قبلا ثبت نام شده است ! 🔴";
+}else{
+
+    Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
+    $text_html = "<b>✔️ ثبت نام کاربر با موفقیت انجام شد
+    💭 اطلاعات ثبت شده
+    نام : {$myarray['firstname']}
+    نام خانوادگی : {$myarray['lastname']}
+    ایمیل : {$myarray['email']}
+    تلفن : {$myarray['phonenum']}
+    رمزعبور : 🔒🔒🔒🔒🔒🔒
+      </b>";
+    $myarray['password'] = Hash::make($myarray['wallet_id']);
+    $myarray['verifyimg'] = $fileName;
+    $bot_user = BotUser::create($myarray);
+    $telegram = new  BotTelegram();
+    $dater = $telegram->store_irpay($myarray);
+
+    movefile_irpay($bot_user);
+
+
+}
+
+
+
             $data = [
                 'parse_mode'=>'HTML',
                 'text'=> $text_html,
@@ -366,6 +410,78 @@ $result = Http::get($api_url);
 
     }
 
+    public function parseUserData($text)
+    {
+        $lines = explode("\n", $text);
+        $data = [];
+        $data['wallet_id'] = '';
+        $data['firstname'] = '';
+        $data['lastname'] = '';
+        $data['fullname'] = '';
+        $data['phonenum'] = '';
+        $data['email'] = '';
 
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            // if (str_starts_with($line, 'Wallet ID')) {
+            if (preg_match('/^wallet id\s+(.*)$/im', $line, $matches)) {
+                $data['wallet_id'] = trim(str_replace('Wallet ID', '', $line));
+            }
+
+            if (preg_match('/^first name\s+(.*)$/im', $line, $matches)) {
+                $data['firstname'] = trim(str_replace('First Name', '', $line));
+            }
+
+
+            if (preg_match('/^last name\s+(.*)$/im', $line, $matches)) {
+                $data['lastname'] = trim(str_replace('Last Name', '', $line));
+            }
+
+
+            if (preg_match('/^phone\s+(.*)$/im', $line, $matches)) {
+                $data['phonenum'] = trim(str_replace('Phone', '', $line));
+            }
+
+            if (preg_match('/^email\s+(.*)$/im', $line, $matches)) {
+                $data['email'] = trim(str_replace('Email', '', $line));
+            }
+        }
+
+        return $data;
+    }
+
+
+    public function store_irpay($data)
+    {
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://irpay.pro/api/user/store',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS => array(
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+          'email' => $data['email'],
+          'phonenum' =>  $data['phonenum'],
+          'password' => $data['wallet_id'],
+          'verifyimg' => '','city' => 'bot',
+          'token' => 'Amer*&uioKOp345!ghJloPPde5&ds'),
+          CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer 321|2xMkRhkeWHrAcnBZPlmAtTqzg4KU3bhTgpViStoY4fa6ea0b'
+          ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+    }
 
     }

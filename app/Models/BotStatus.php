@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BotStatus extends Model
 {
     protected $fillable = [
+        'start',
         'register',
         'registerdone',
     ];

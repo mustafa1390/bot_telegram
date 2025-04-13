@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('bot_statuses', function (Blueprint $table) {
             $table->id();
+            $table->integer('start')->default('0');
             $table->integer('register')->default('0');
             $table->integer('registerdone')->default('0');
             $table->timestamps();

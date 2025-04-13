@@ -18,7 +18,7 @@ class BotTelegramController extends Controller
     public function __construct()
     {
 
-        $this->bot_token='7675274082:AAH2mrj9oM_A6t7sbqq_U1QfOhtHdKR3u9g';
+        $this->bot_token='7781792427:AAFG-TaLTWrPOm2SDUjUZBThkInaRByb1ks';
 
     }
 
@@ -69,27 +69,64 @@ class BotTelegramController extends Controller
             // $telegram = new  BotTelegram();
             // $output = $telegram->inline_cl($data,'back');
             // $chat_id = $data->callback_query->id;
-            $chat_id = $data->callback_query->from->id;
+            // $chat_id = $data->callback_query->from->id;
             // $chat_id = 166451980;
-            $text_html = "<b>لطفا اطلاعات ثبت نام را به فرمت صحیح وارد نمایید  {$chat_id}  </b>";
-    $data = [
+
+            $text_html = "<b> 📢 لطفا اطلاعات کاربر را به همراه تصویر وریفای کاربر آپلود نمایید ◼️◾️▪️  </b>";
+    // $data = [
+    //     'parse_mode'=>'HTML',
+    //     'text'=> $text_html,
+    //     'chat_id'=> 166451980
+    // ];
+
+    $inline= array(
+        'resize_keyboard'=>true,
+        'inline_keyboard'=>array(
+            array(
+                 array('text'=>'اینستfffاگرام',
+                'url'=>"https://instagram.com/rezakarimpour.pro")
+            ), array(
+                array('text'=>'گوگل 🔺️ ','url'=>"https://google.com"),
+                array('text'=>'بازگشت ↖️','callback_data'=>"back"),
+                array('text'=>'ثبت نام کاربر 🚹','callback_data'=>"register"),
+            )
+        )
+    );
+
+
+    $datan = [
         'parse_mode'=>'HTML',
-        'text'=> $text_html,
-        'chat_id'=> $chat_id
+        'text'=>  $text_html,
+        'chat_id'=> $data->callback_query->from->id,
+        // 'reply_markup'=>json_encode($inline)
     ];
 
-    $paramm = http_build_query($data);
+    $paramm = http_build_query($datan);
     $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
     $result = Http::get($api_url);
+
+         $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 1 ] );
         }
     }
 
+    $bot_status = BotStatus::where([ ['id','=',1],   ])->orderBy('id', 'desc')->first();
     if(isset($data->message)){
     if(isset($data->message->text)){
-        if($data->message->text=='/start'){
+        if(($data->message->text=='/reset')&&($bot_status->start==0)){
+
+            $bot_status = BotStatus::where([ ['id','=',1],  ])->update( ['start' => 1 ] );
+        }
+        if(($data->message->text=='/start')){
+            // &&($bot_status->start==1)
             $telegram = new  BotTelegram();
             $output = $telegram->menue_start($data );
             $bot_status = BotStatus::where([ ['id','=',1],  ])->update( ['register' => 1 ] );
+            $bot_status = BotStatus::where([ ['id','=',1],  ])->update( ['start' => 0 ] );
+
+
+
+
+            // BotLog::create(['chat_id'=>$data->message->chat->id  ]);
         }
     //     $text_html = "<b>به ربات irpaybbbbb خوش آمدید   text: {$data->message->text} </b>";
 
@@ -111,13 +148,15 @@ class BotTelegramController extends Controller
     $bot_status = BotStatus::where([ ['id','=',1],   ])->orderBy('id', 'desc')->first();
 
     $word = "name";
-    if (isset($data->message) && isset($data->message->photo) && ($data->message->caption!=null)
-    &&(strpos($data->message->caption, $word) !== false)&&($bot_status->registerdone==1) ) {
+    if (isset($data->message) && isset($data->message->photo)&& isset($data->message->caption) && ($bot_status->registerdone==1) ) {
+    if (  ($data->message->caption!=null) &&(strpos($data->message->caption, $word) !== false)  ) {
         $mydata = $request->all();
+        $bot_status = BotStatus::where([ ['id','=',1],  ])->update( ['start' => 1 ] );
          $telegram = new  BotTelegram();
          $fileName = $telegram->photo($mydata);
         //  $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
 
+    }
     }
 
 
@@ -131,7 +170,7 @@ class BotTelegramController extends Controller
    }
    public function set_webhook(){
 
-    $this->bot_token = '7675274082:AAH2mrj9oM_A6t7sbqq_U1QfOhtHdKR3u9g';
+    $this->bot_token = '7781792427:AAFG-TaLTWrPOm2SDUjUZBThkInaRByb1ks';
     $url_webhook = 'https://alfa724.ir/telegram/url_webhookk';
     $api_url = "https://api.telegram.org/bot".$this->bot_token."/setWebhook?url=".$url_webhook;
 
@@ -210,3 +249,5 @@ class BotTelegramController extends Controller
    }
 
 }
+
+
