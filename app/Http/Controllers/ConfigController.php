@@ -38,6 +38,7 @@ class ConfigController extends Controller
         curl_close($curl);
         $response = json_decode($response);
 
+        echo $response->status;
         dd($response);
 
     }
