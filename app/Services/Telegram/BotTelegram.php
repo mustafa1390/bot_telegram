@@ -304,17 +304,15 @@ $result = Http::get($api_url);
     {
 
                // Handle incoming photo
-               if (isset($data['message']['photo'])) {
-
+            if (isset($data['message']['photo'])) {
                 $mediaGroupId = $data['message']['media_group_id'] ?? null;
-
                 if($mediaGroupId){
                     $telegram = new  BotTelegram();
                     $myarray = $telegram->multi_photo($data);
                 }else{
                     $telegram = new  BotTelegram();
                     $myarray = $telegram->single_photo($data);
-            }
+                 }
             }
 
 
@@ -418,33 +416,15 @@ $media[] = [
     ])->json();
 
     if (isset($getFile['result']['file_path'])) {
-        $filePath = $getFile['result']['file_path'];
-        $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
-        $contents = file_get_contents($fileUrl);
-        $fileName = basename($filePath);
 
-        $current_timestamp = \Carbon\Carbon::now()->timestamp;
-        $fileName =$current_timestamp.$fileName;
-
-        Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
+        $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
+        $telegram = new  BotTelegram();
+        $myarray = $telegram->valid_file_register($getFile,$data,$caption);
 
     }
 
 
-
-        $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
-        $text_html = " 🎴 چند تصویری وجود دارد! 🎴  {$caption}
-
-{$fileName}";
-        $data = [
-            'parse_mode'=>'HTML',
-            'text'=> $text_html,
-            'chat_id'=> $chatId
-        ];
-
-        $paramm = http_build_query($data);
-        $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
-        $result = Http::get($api_url);
+ 
     }
 
     public function single_photo($data)
@@ -461,12 +441,31 @@ $media[] = [
             'file_id' => $fileId
         ])->json();
         if (isset($getFile['result']['file_path'])) {
-            $filePath = $getFile['result']['file_path'];
-            $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
-            $contents = file_get_contents($fileUrl);
-            $fileName = basename($filePath);
-            $current_timestamp = \Carbon\Carbon::now()->timestamp;
-            $fileName =$current_timestamp.$fileName;
+
+
+            $telegram = new  BotTelegram();
+            $myarray = $telegram->valid_file_register($getFile,$data,$text);
+
+
+
+        }
+
+        // return $fileName;
+    }
+
+
+    public function valid_file_register($getFile,$data,$text)
+    {
+
+
+        $chatId = $data['message']['chat']['id'];
+        $token = env('TELEGRAM_BOT_TOKEN');
+        $filePath = $getFile['result']['file_path'];
+        $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
+        $contents = file_get_contents($fileUrl);
+        $fileName = basename($filePath);
+        $current_timestamp = \Carbon\Carbon::now()->timestamp;
+        $fileName =$current_timestamp.$fileName;
 $telegram = new  BotTelegram();
 $myarray = $telegram->parseUserData($text);
 $tt = preg_match('/^first name\s+(.*)$/im', $text, $matches);
@@ -493,21 +492,19 @@ movefile_irpay($bot_user);
 
 
 
-    $data = [
-        'parse_mode'=>'HTML',
-        'text'=> $text_html,
-        'chat_id'=> $chatId
-    ];
+$data = [
+    'parse_mode'=>'HTML',
+    'text'=> $text_html,
+    'chat_id'=> $chatId
+];
 
-    $paramm = http_build_query($data);
-    $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
-    $result = Http::get($api_url);
-
-
+$paramm = http_build_query($data);
+$api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
+$result = Http::get($api_url);
 
 
-        }
 
-        return $fileName;
     }
+
+
     }
