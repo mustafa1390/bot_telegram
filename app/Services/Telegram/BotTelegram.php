@@ -372,6 +372,7 @@ $payload = [
                     // $current_timestamp = 'Me_';
                     $fileName =$current_timestamp.$fileName;
 
+                    Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
                     // uploadFile_bot($data);
 
                 }
