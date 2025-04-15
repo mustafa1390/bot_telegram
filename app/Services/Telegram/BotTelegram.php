@@ -334,8 +334,27 @@ $result = Http::get($api_url);
                     file_put_contents($album_file, json_encode($album_data));
 
 
+
+                    $media = [];
+
+foreach ($album_data['photos'] as $index => $fileId) {
+    $media[] = [
+        'type' => 'photo',
+        'media' => $fileId,
+        'caption' => $index === 0 ? $album_data['caption'] : '', // Only first can have caption
+    ];
+}
+
+$payload = [
+    'chat_id' => $data['message']['chat']['id'],
+    'media' => json_encode($media),
+];
+
+
                     $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
-                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴 {$album_file}";
+                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴 {$album_file} bbbb
+
+{$payload}";
                     $data = [
                         'parse_mode'=>'HTML',
                         'text'=> $text_html,
