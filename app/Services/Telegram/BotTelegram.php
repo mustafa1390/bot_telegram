@@ -316,23 +316,10 @@ $result = Http::get($api_url);
                     $caption = $data['message']['caption'] ?? '';
                     $file_id = end($data['message']['photo'])['file_id'];
 
-                    $album_dir = __DIR__ . "/albums";
-                    if (!is_dir($album_dir)) {
-                        mkdir($album_dir, 0777, true);
-                    }
 
-                    $album_file = $album_dir . "/{$media_group_id}.json";
-
-                    // Load or initialize album data
-                    if (file_exists($album_file)) {
-                        $album_data = json_decode(file_get_contents($album_file), true);
-                    } else {
-                        $album_data = ['photos' => [], 'caption' => $caption];
-                    }
 
                     $album_data['photos'][] = $file_id;
-                    file_put_contents($album_file, json_encode($album_data));
-
+                    
 
 
                     $media = [];
