@@ -319,7 +319,7 @@ $result = Http::get($api_url);
 
 
                     $album_data['photos'][] = $file_id;
-                    
+
 
 
                     $media = [];
@@ -327,8 +327,7 @@ $result = Http::get($api_url);
 foreach ($album_data['photos'] as $index => $fileId) {
     $media[] = [
         'type' => 'photo',
-        'media' => $fileId,
-        'caption' => $index === 0 ? $album_data['caption'] : '', // Only first can have caption
+        'media' => $fileId, 
     ];
 }
 
