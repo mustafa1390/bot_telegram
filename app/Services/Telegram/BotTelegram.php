@@ -344,7 +344,7 @@ foreach ($album_data['photos'] as $index => $fileId) {
         'caption' => $index === 0 ? $album_data['caption'] : '', // Only first can have caption
     ];
 }
-
+$nbn = json_encode($media);
 $payload = [
     'chat_id' => $data['message']['chat']['id'],
     'media' => json_encode($media),
@@ -354,7 +354,7 @@ $payload = [
                     $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
                     $text_html = " 🎴 چند تصویری وجود دارد! 🎴 {$album_file} bbbb
 
-{$payload}";
+{$nbn}";
                     $data = [
                         'parse_mode'=>'HTML',
                         'text'=> $text_html,
