@@ -5,6 +5,7 @@ namespace App\Services\Telegram;
 use GuzzleHttp\Psr7;
 use App\Models\BotLog;
 use App\Models\BotUser;
+use App\Models\BotStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -304,7 +305,51 @@ $result = Http::get($api_url);
 
                // Handle incoming photo
                if (isset($data['message']['photo'])) {
+
                 $chatId = $data['message']['chat']['id'];
+                $mediaGroupId = $data['message']['media_group_id'] ?? null;
+
+                if($mediaGroupId){
+
+
+                    $media_group_id = $data['message']['media_group_id'];
+                    $caption = $data['message']['caption'] ?? '';
+                    $file_id = end($data['message']['photo'])['file_id'];
+
+                    $album_dir = __DIR__ . "/albums";
+                    if (!is_dir($album_dir)) {
+                        mkdir($album_dir, 0777, true);
+                    }
+
+                    $album_file = $album_dir . "/{$media_group_id}.json";
+
+                    // Load or initialize album data
+                    if (file_exists($album_file)) {
+                        $album_data = json_decode(file_get_contents($album_file), true);
+                    } else {
+                        $album_data = ['photos' => [], 'caption' => $caption];
+                    }
+
+                    $album_data['photos'][] = $file_id;
+                    file_put_contents($album_file, json_encode($album_data));
+
+
+                    $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
+                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴";
+                    $data = [
+                        'parse_mode'=>'HTML',
+                        'text'=> $text_html,
+                        'chat_id'=> $chatId
+                    ];
+
+                    $paramm = http_build_query($data);
+                    $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
+                    $result = Http::get($api_url);
+
+                }else{
+
+
+
                 // $chatId = $data['message']['chat']['from']['id'];
                 $photos = $data['message']['photo'];
                 $text = $data['message']['caption'];
@@ -405,6 +450,7 @@ if($useri){
                 }
 
                 return $fileName;
+            }
             }
 
 
