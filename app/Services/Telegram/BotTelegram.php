@@ -306,86 +306,14 @@ $result = Http::get($api_url);
                // Handle incoming photo
                if (isset($data['message']['photo'])) {
 
-                $chatId = $data['message']['chat']['id'];
                 $mediaGroupId = $data['message']['media_group_id'] ?? null;
 
                 if($mediaGroupId){
                     $telegram = new  BotTelegram();
                     $myarray = $telegram->multi_photo($data);
-
                 }else{
-
-
-
-                $photos = $data['message']['photo'];
-                $text = $data['message']['caption'];
-
-                $fileId = end($photos)['file_id'];
-
-                $token = env('TELEGRAM_BOT_TOKEN');
-                $getFile = Http::get("https://api.telegram.org/bot{$token}/getFile", [
-                    'file_id' => $fileId
-                ])->json();
-
-                if (isset($getFile['result']['file_path'])) {
-                    $filePath = $getFile['result']['file_path'];
-                    $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
-
-                    $contents = file_get_contents($fileUrl);
-                    $fileName = basename($filePath);
-
-                    $current_timestamp = \Carbon\Carbon::now()->timestamp;
-                    $fileName =$current_timestamp.$fileName;
-
-
-$telegram = new  BotTelegram();
-$myarray = $telegram->parseUserData($text);
-$tt = preg_match('/^first name\s+(.*)$/im', $text, $matches);
-
-
-$useri = BotUser::where([ ['email',$myarray['email']], ])->first();
-
-if($useri){
-
-    $text_html = " 🔴 این کاربر قبلا ثبت نام شده است ! 🔴";
-}else{
-
-    Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
-    $text_html = "<b>✔️ ثبت نام کاربر با موفقیت انجام شد
-    💭 اطلاعات ثبت شده
-    نام : {$myarray['firstname']}
-    نام خانوادگی : {$myarray['lastname']}
-    ایمیل : {$myarray['email']}
-    تلفن : {$myarray['phonenum']}
-    رمزعبور : 🔒🔒🔒🔒🔒🔒
-      </b>";
-    $myarray['password'] = Hash::make($myarray['wallet_id']);
-    $myarray['verifyimg'] = $fileName;
-    $bot_user = BotUser::create($myarray);
-    $telegram = new  BotTelegram();
-    $dater = $telegram->store_irpay($myarray);
-    movefile_irpay($bot_user);
-
-}
-
-
-
-            $data = [
-                'parse_mode'=>'HTML',
-                'text'=> $text_html,
-                'chat_id'=> $chatId
-            ];
-
-            $paramm = http_build_query($data);
-            $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
-            $result = Http::get($api_url);
-
-
-
-
-                }
-
-                return $fileName;
+                    $telegram = new  BotTelegram();
+                    $myarray = $telegram->single_photo($data);
             }
             }
 
@@ -519,4 +447,67 @@ $media[] = [
         $result = Http::get($api_url);
     }
 
+    public function single_photo($data)
+    {
+
+
+
+        $chatId = $data['message']['chat']['id'];
+        $photos = $data['message']['photo'];
+        $text = $data['message']['caption'];
+        $fileId = end($photos)['file_id'];
+        $token = env('TELEGRAM_BOT_TOKEN');
+        $getFile = Http::get("https://api.telegram.org/bot{$token}/getFile", [
+            'file_id' => $fileId
+        ])->json();
+        if (isset($getFile['result']['file_path'])) {
+            $filePath = $getFile['result']['file_path'];
+            $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
+            $contents = file_get_contents($fileUrl);
+            $fileName = basename($filePath);
+            $current_timestamp = \Carbon\Carbon::now()->timestamp;
+            $fileName =$current_timestamp.$fileName;
+$telegram = new  BotTelegram();
+$myarray = $telegram->parseUserData($text);
+$tt = preg_match('/^first name\s+(.*)$/im', $text, $matches);
+$useri = BotUser::where([ ['email',$myarray['email']], ])->first();
+if($useri){
+$text_html = " 🔴 این کاربر قبلا ثبت نام شده است ! 🔴";
+}else{
+Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
+$text_html = "<b>✔️ ثبت نام کاربر با موفقیت انجام شد
+💭 اطلاعات ثبت شده
+نام : {$myarray['firstname']}
+نام خانوادگی : {$myarray['lastname']}
+ایمیل : {$myarray['email']}
+تلفن : {$myarray['phonenum']}
+رمزعبور : 🔒🔒🔒🔒🔒🔒
+</b>";
+$myarray['password'] = Hash::make($myarray['wallet_id']);
+$myarray['verifyimg'] = $fileName;
+$bot_user = BotUser::create($myarray);
+$telegram = new  BotTelegram();
+$dater = $telegram->store_irpay($myarray);
+movefile_irpay($bot_user);
+}
+
+
+
+    $data = [
+        'parse_mode'=>'HTML',
+        'text'=> $text_html,
+        'chat_id'=> $chatId
+    ];
+
+    $paramm = http_build_query($data);
+    $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
+    $result = Http::get($api_url);
+
+
+
+
+        }
+
+        return $fileName;
+    }
     }
