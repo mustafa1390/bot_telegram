@@ -363,7 +363,7 @@ $result = Http::get($api_url);
     public function store_irpay($data)
     {
 
-        $curl = curl_init(); 
+        $curl = curl_init();
         curl_setopt_array($curl, array(
           CURLOPT_URL => 'https://irpay.pro/api/user/store',
           CURLOPT_RETURNTRANSFER => true,
@@ -388,6 +388,41 @@ $result = Http::get($api_url);
 
         $response = curl_exec($curl);
         curl_close($curl);
+    }
+
+
+    public function validate_user($data)
+    {
+
+
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://irpay.pro/api/user/validate_user',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS => array(
+            'email' => $data['email'],
+            'phonenum' =>  $data['phonenum'],
+          'token' => 'Amer*&uioKOp345!ghJloPPde5&ds'),
+          CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer 321|2xMkRhkeWHrAcnBZPlmAtTqzg4KU3bhTgpViStoY4fa6ea0b'
+          ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response = json_decode($response);
+
+        return $response->status;
+        // dd($response);
+
+
     }
 
 
@@ -467,8 +502,15 @@ $media[] = [
 $telegram = new  BotTelegram();
 $myarray = $telegram->parseUserData($text);
 $tt = preg_match('/^first name\s+(.*)$/im', $text, $matches);
-$useri = BotUser::where([ ['email',$myarray['email']], ])->first();
-if($useri){
+// $useri = BotUser::where([ ['email',$myarray['email']], ])->first();
+
+
+$telegram = new  BotTelegram();
+$useri = $telegram->validate_user($myarray);
+
+
+
+if($useri==1){
 $text_html = " 🔴 این کاربر قبلا ثبت نام شده است ! 🔴";
 }else{
 Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
