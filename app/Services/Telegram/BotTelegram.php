@@ -327,7 +327,7 @@ $result = Http::get($api_url);
 foreach ($album_data['photos'] as $index => $fileId) {
     $media[] = [
         'type' => 'photo',
-        'media' => $fileId, 
+        'media' => $fileId,
     ];
 }
 
@@ -366,7 +366,7 @@ $payload = [
 
 
                     $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
-                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴 {$album_file} bbbb
+                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴  
 
 {$fileName}";
                     $data = [
