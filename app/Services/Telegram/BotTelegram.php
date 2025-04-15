@@ -310,87 +310,18 @@ $result = Http::get($api_url);
                 $mediaGroupId = $data['message']['media_group_id'] ?? null;
 
                 if($mediaGroupId){
-
-
-                    $media_group_id = $data['message']['media_group_id'];
-                    $caption = $data['message']['caption'] ?? '';
-                    $file_id = end($data['message']['photo'])['file_id'];
-
-
-
-                    $album_data['photos'][] = $file_id;
-
-
-
-                    $media = [];
-
-foreach ($album_data['photos'] as $index => $fileId) {
-    $media[] = [
-        'type' => 'photo',
-        'media' => $fileId,
-    ];
-}
-
-
-$nbn = json_encode($media);
-$payload = [
-    'chat_id' => $data['message']['chat']['id'],
-    'media' => json_encode($media),
-];
-
-
-
-                // Get file path from Telegram API
-                $token = env('TELEGRAM_BOT_TOKEN');
-                $getFile = Http::get("https://api.telegram.org/bot{$token}/getFile", [
-                    'file_id' => $fileId
-                ])->json();
-
-                if (isset($getFile['result']['file_path'])) {
-                    $filePath = $getFile['result']['file_path'];
-                    $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
-
-                    // Download and save to storage (e.g., storage/app/public/telegram/)
-                    $contents = file_get_contents($fileUrl);
-                    $fileName = basename($filePath);
-
-                    $current_timestamp = \Carbon\Carbon::now()->timestamp;
-                    // $current_timestamp = 'Me_';
-                    $fileName =$current_timestamp.$fileName;
-
-                    Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
-                    // uploadFile_bot($data);
-
-                }
-
-
-
-                    $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
-                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴  {$caption}
-
-{$fileName}";
-                    $data = [
-                        'parse_mode'=>'HTML',
-                        'text'=> $text_html,
-                        'chat_id'=> $chatId
-                    ];
-
-                    $paramm = http_build_query($data);
-                    $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
-                    $result = Http::get($api_url);
+                    $telegram = new  BotTelegram();
+                    $myarray = $telegram->multi_photo($data);
 
                 }else{
 
 
 
-                // $chatId = $data['message']['chat']['from']['id'];
                 $photos = $data['message']['photo'];
                 $text = $data['message']['caption'];
 
-                // Get the highest-resolution version (last one)
                 $fileId = end($photos)['file_id'];
 
-                // Get file path from Telegram API
                 $token = env('TELEGRAM_BOT_TOKEN');
                 $getFile = Http::get("https://api.telegram.org/bot{$token}/getFile", [
                     'file_id' => $fileId
@@ -400,42 +331,16 @@ $payload = [
                     $filePath = $getFile['result']['file_path'];
                     $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
 
-                    // Download and save to storage (e.g., storage/app/public/telegram/)
                     $contents = file_get_contents($fileUrl);
                     $fileName = basename($filePath);
 
                     $current_timestamp = \Carbon\Carbon::now()->timestamp;
-                    // $current_timestamp = 'Me_';
                     $fileName =$current_timestamp.$fileName;
-
-                    // uploadFile_bot($data);
-
-
-
-
-
-                    // Send confirmation
-                    // Http::post("https://api.telegram.org/bot{$token}/sendMessage", [
-                    //     'chat_id' => $chatId,
-                    //     'text' => "📸 Your photo has been saved as: {$fileName}"
-                    // ]);
-
-
-
-
-// $text ="
-// Wallet ID 2647364
-// Full name نرگس ال کثیر (Narges Alkasir)
-// First Name نرگس
-// Last Name ال کثیر
-// Phone 989138660585
-// Email narges.alkasir585@gmail.com";
 
 
 $telegram = new  BotTelegram();
 $myarray = $telegram->parseUserData($text);
 $tt = preg_match('/^first name\s+(.*)$/im', $text, $matches);
-
 
 
 $useri = BotUser::where([ ['email',$myarray['email']], ])->first();
@@ -459,9 +364,7 @@ if($useri){
     $bot_user = BotUser::create($myarray);
     $telegram = new  BotTelegram();
     $dater = $telegram->store_irpay($myarray);
-
     movefile_irpay($bot_user);
-
 
 }
 
@@ -561,6 +464,59 @@ if($useri){
         $response = curl_exec($curl);
 
         curl_close($curl);
+    }
+
+
+    public function multi_photo($data)
+    {
+
+        $chatId = $data['message']['chat']['id'];
+        $media_group_id = $data['message']['media_group_id'];
+        $caption = $data['message']['caption'] ?? '';
+        $file_id = end($data['message']['photo'])['file_id'];
+        $album_data['photos'][] = $file_id;
+        $media = [];
+foreach ($album_data['photos'] as $index => $fileId) {
+$media[] = [
+'type' => 'photo',
+'media' => $fileId,
+];
+}
+
+
+    $token = env('TELEGRAM_BOT_TOKEN');
+    $getFile = Http::get("https://api.telegram.org/bot{$token}/getFile", [
+        'file_id' => $fileId
+    ])->json();
+
+    if (isset($getFile['result']['file_path'])) {
+        $filePath = $getFile['result']['file_path'];
+        $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
+        $contents = file_get_contents($fileUrl);
+        $fileName = basename($filePath);
+
+        $current_timestamp = \Carbon\Carbon::now()->timestamp;
+        $fileName =$current_timestamp.$fileName;
+
+        Storage::disk('uploads')->put("telegram/{$fileName}", $contents);
+
+    }
+
+
+
+        $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
+        $text_html = " 🎴 چند تصویری وجود دارد! 🎴  {$caption}
+
+{$fileName}";
+        $data = [
+            'parse_mode'=>'HTML',
+            'text'=> $text_html,
+            'chat_id'=> $chatId
+        ];
+
+        $paramm = http_build_query($data);
+        $api_url = "https://api.telegram.org/bot".$this->bot_token."/sendMessage?".$paramm;
+        $result = Http::get($api_url);
     }
 
     }
