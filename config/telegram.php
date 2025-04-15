@@ -33,7 +33,7 @@ return [
     'bots' => [
         'mybot' => [
             // 'token' => env('TELEGRAM_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
-            'token' => '7616795976:AAFPZljj5HHq_mUXrUB4L9ZGfMz_9LvE0HE',
+            'token' => '7675274082:AAH2mrj9oM_A6t7sbqq_U1QfOhtHdKR3u9g',
             'certificate_path' => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
             // 'webhook_url' => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
             'webhook_url' => 'https://alfa724.ir/telegram_sdk/webhook',
