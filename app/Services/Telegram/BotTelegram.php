@@ -366,7 +366,7 @@ $payload = [
 
 
                     $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
-                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴  
+                    $text_html = " 🎴 چند تصویری وجود دارد! 🎴  {$caption}
 
 {$fileName}";
                     $data = [
