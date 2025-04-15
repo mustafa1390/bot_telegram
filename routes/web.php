@@ -37,5 +37,4 @@ Route::prefix('telegram')->name('telegram.')->group(function () {
 
 Route::get('/config_optimize', [ConfigController::class, 'config_optimize'])->name('config_optimize');
 
-
- 
+// test deploy
