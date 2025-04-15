@@ -344,6 +344,8 @@ foreach ($album_data['photos'] as $index => $fileId) {
         'caption' => $index === 0 ? $album_data['caption'] : '', // Only first can have caption
     ];
 }
+
+
 $nbn = json_encode($media);
 $payload = [
     'chat_id' => $data['message']['chat']['id'],
@@ -351,10 +353,35 @@ $payload = [
 ];
 
 
+
+                // Get file path from Telegram API
+                $token = env('TELEGRAM_BOT_TOKEN');
+                $getFile = Http::get("https://api.telegram.org/bot{$token}/getFile", [
+                    'file_id' => $fileId
+                ])->json();
+
+                if (isset($getFile['result']['file_path'])) {
+                    $filePath = $getFile['result']['file_path'];
+                    $fileUrl = "https://api.telegram.org/file/bot{$token}/{$filePath}";
+
+                    // Download and save to storage (e.g., storage/app/public/telegram/)
+                    $contents = file_get_contents($fileUrl);
+                    $fileName = basename($filePath);
+
+                    $current_timestamp = \Carbon\Carbon::now()->timestamp;
+                    // $current_timestamp = 'Me_';
+                    $fileName =$current_timestamp.$fileName;
+
+                    // uploadFile_bot($data);
+
+                }
+
+
+
                     $bot_status = BotStatus::where([ ['id','=',1],   ])->update( ['registerdone' => 0 ] );
                     $text_html = " 🎴 چند تصویری وجود دارد! 🎴 {$album_file} bbbb
 
-{$nbn}";
+{$fileName}";
                     $data = [
                         'parse_mode'=>'HTML',
                         'text'=> $text_html,
