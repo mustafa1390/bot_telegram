@@ -363,8 +363,7 @@ $result = Http::get($api_url);
     public function store_irpay($data)
     {
 
-        $curl = curl_init();
-
+        $curl = curl_init(); 
         curl_setopt_array($curl, array(
           CURLOPT_URL => 'https://irpay.pro/api/user/store',
           CURLOPT_RETURNTRANSFER => true,
@@ -388,7 +387,6 @@ $result = Http::get($api_url);
         ));
 
         $response = curl_exec($curl);
-
         curl_close($curl);
     }
 
@@ -424,7 +422,7 @@ $media[] = [
     }
 
 
- 
+
     }
 
     public function single_photo($data)

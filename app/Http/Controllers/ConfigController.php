@@ -12,6 +12,37 @@ class ConfigController extends Controller
 {
 
 
+    public function send_curl_test(){
+
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://irpay.pro/api/user/validate_user',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS => array(
+          'email' => 'mustafa1390@gmail.com',
+          'phonenum' =>  '09384762155',
+          'token' => 'Amer*&uioKOp345!ghJloPPde5&ds'),
+          CURLOPT_HTTPHEADER => array(
+            'Authorization: Bearer 321|2xMkRhkeWHrAcnBZPlmAtTqzg4KU3bhTgpViStoY4fa6ea0b'
+          ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response = json_decode($response);
+
+        dd($response);
+
+    }
+
+
     public function config_optimize(){
     Artisan::call('route:cache');
     Artisan::call('config:cache');
