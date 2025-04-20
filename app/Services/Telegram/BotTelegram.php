@@ -329,34 +329,76 @@ $result = Http::get($api_url);
         $data['phonenum'] = '';
         $data['email'] = '';
 
+
+
+// Normalize whitespace
+$text = trim(str_replace(["\r", "\t"], '', $text));
+
+
+
+preg_match('/Wallet ID\s+(\d+)/', $text, $wallet);
+preg_match('/نام و نام خانوادگی\s+(.*?)\s+\((.*?)\)/u', $text, $fullName);
+preg_match('/First Name\s+([^\n]+)/u', $text, $firstName);
+preg_match('/Last Name\s+([^\n]+)/u', $text, $lastName);
+preg_match('/Phone\s+([0-9]+)/', $text, $phonenum);
+preg_match('/آدرس ایمیل\s+([^\s]+)/u', $text, $email);
+
+
+
+$data['wallet_id'] = $wallet[1] ?? '';
+$data['firstname'] = $firstName[1] ?? '';
+$data['lastname'] = $lastName[1] ?? '';
+$data['fullname'] = $data['firstname'].' '.$data['lastname'];
+$data['phonenum'] = $phonenum[1] ?? '';
+$data['email'] = $email[1] ?? '';
+
+
+// $userInfo = [
+//     "wallet_id"      => $wallet[1] ?? '',
+//     "full_name_fa"   => $fullName[1] ?? '',
+//     "full_name_en"   => $fullName[2] ?? '',
+//     "first_name_fa"  => $firstName[1] ?? '',
+//     "last_name_fa"   => $lastName[1] ?? '',
+//     "phone"          => $phone[1] ?? '',
+//     "email"          => $email[1] ?? '',
+// ];
+
+// Output result
+// print_r($userInfo);
+
+
+
         foreach ($lines as $line) {
             $line = trim($line);
 
             // if (str_starts_with($line, 'Wallet ID')) {
-            if (preg_match('/^wallet id\s+(.*)$/im', $line, $matches)) {
-                $data['wallet_id'] = trim(str_replace('Wallet ID', '', $line));
-            }
-
-            if (preg_match('/^first name\s+(.*)$/im', $line, $matches)) {
-                $data['firstname'] = trim(str_replace('First Name', '', $line));
-            }
 
 
-            if (preg_match('/^last name\s+(.*)$/im', $line, $matches)) {
-                $data['lastname'] = trim(str_replace('Last Name', '', $line));
-            }
+            // if (preg_match('/^wallet id\s+(.*)$/im', $line, $matches)) {
+            //     $data['wallet_id'] = trim(str_replace('Wallet ID', '', $line));
+            // }
+
+            // if (preg_match('/^first name\s+(.*)$/im', $line, $matches)) {
+            //     $data['firstname'] = trim(str_replace('First Name', '', $line));
+            // }
 
 
-            if (preg_match('/^phone\s+(.*)$/im', $line, $matches)) {
-                $data['phonenum'] = trim(str_replace('Phone', '', $line));
-            }
+            // if (preg_match('/^last name\s+(.*)$/im', $line, $matches)) {
+            //     $data['lastname'] = trim(str_replace('Last Name', '', $line));
+            // }
+
+
+            // if (preg_match('/^phone\s+(.*)$/im', $line, $matches)) {
+            //     $data['phonenum'] = trim(str_replace('Phone', '', $line));
+            // }
 
             // if (preg_match('/^email\s+(.*)$/im', $line, $matches)) {
             //     $data['email'] = trim(str_replace('Email', '', $line));
             // }
-            if (str_starts_with($line, 'ایمیل')) {
-                $data['email'] = trim(str_replace('ایمیل', '', $line));
-            }
+
+
+
+
         }
 
         return $data;
