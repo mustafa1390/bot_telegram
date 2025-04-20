@@ -355,7 +355,7 @@ $result = Http::get($api_url);
                 $data['email'] = trim(str_replace('Email', '', $line));
             }
             if (str_starts_with($line, 'ایمیل')) {
-                $data['email'] = trim(str_replace('Email', '', $line));
+                $data['email'] = trim(str_replace('ایمیل', '', $line));
             }
         }
 
