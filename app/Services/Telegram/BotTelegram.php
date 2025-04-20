@@ -337,10 +337,10 @@ $text = trim(str_replace(["\r", "\t"], '', $text));
 
 
 preg_match('/Wallet ID\s+(\d+)/', $text, $wallet);
-preg_match('/نام و نام خانوادگی\s+(.*?)\s+\((.*?)\)/u', $text, $fullName);
+// preg_match('/نام و نام خانوادگی\s+(.*?)\s+\((.*?)\)/u', $text, $fullName);
 preg_match('/First Name\s+([^\n]+)/u', $text, $firstName);
 preg_match('/Last Name\s+([^\n]+)/u', $text, $lastName);
-preg_match('/Phone\s+([0-9]+)/', $text, $phonenum);
+preg_match('/Phone\s+(\d+)/', $text, $phonenum);
 
 if (preg_match('/Email\s+([^\n]+)/u', $text, $email)) { preg_match('/Email\s+([^\n]+)/u', $text, $email); }
 if (preg_match('/ایمیل\s+([^\n]+)/u', $text, $email)) { preg_match('/ایمیل\s+([^\n]+)/u', $text, $email); }
