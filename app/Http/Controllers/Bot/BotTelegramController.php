@@ -149,7 +149,7 @@ class BotTelegramController extends Controller
 
     $word = "name";
     if (isset($data->message) && isset($data->message->photo)&& isset($data->message->caption) && ($bot_status->registerdone==1) ) {
-    if (  ($data->message->caption!=null) &&(strpos($data->message->caption, $word) !== false)  ) {
+    if (  ($data->message->caption!=null)  ) {
         $mydata = $request->all();
         $bot_status = BotStatus::where([ ['id','=',1],  ])->update( ['start' => 1 ] );
          $telegram = new  BotTelegram();
