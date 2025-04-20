@@ -401,7 +401,8 @@ $data['email'] = $email[1] ?? '';
 
         }
 
-        return $datan;
+        return $data;
+        
     }
 
 
