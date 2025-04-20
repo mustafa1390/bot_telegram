@@ -342,8 +342,8 @@ preg_match('/First Name\s+([^\n]+)/u', $text, $firstName);
 preg_match('/Last Name\s+([^\n]+)/u', $text, $lastName);
 preg_match('/Phone\s+([0-9]+)/', $text, $phonenum);
 
-if (preg_match('/^ایمیل\s+(.*)$/im', $text, $email)) { preg_match('/^ایمیل\s+(.*)$/im', $text, $email); }
-if (preg_match('/ایمیل\s+(.*?)\s+\((.*?)\)/u', $text, $email)) { preg_match('/ایمیل\s+(.*?)\s+\((.*?)\)/u', $text, $email); }
+if (preg_match('/Email\s+([^\n]+)/u', $text, $email)) { preg_match('/Email\s+([^\n]+)/u', $text, $email); }
+if (preg_match('/ایمیل\s+([^\n]+)/u', $text, $email)) { preg_match('/ایمیل\s+([^\n]+)/u', $text, $email); }
 
 
 
