@@ -343,7 +343,7 @@ preg_match('/Last Name\s+([^\n]+)/u', $text, $lastName);
 preg_match('/Phone\s+([0-9]+)/', $text, $phonenum);
 
 if (preg_match('/^ایمیل\s+(.*)$/im', $text, $email)) { preg_match('/^ایمیل\s+(.*)$/im', $text, $email); }
- if (preg_match('/^email\s+(.*)$/im', $text, $email)) { preg_match('/^email\s+(.*)$/im', $text, $email); }
+if (preg_match('/ایمیل\s+(.*?)\s+\((.*?)\)/u', $text, $email)) { preg_match('/ایمیل\s+(.*?)\s+\((.*?)\)/u', $text, $email); }
 
 
 
