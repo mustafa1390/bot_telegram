@@ -351,9 +351,9 @@ $result = Http::get($api_url);
                 $data['phonenum'] = trim(str_replace('Phone', '', $line));
             }
 
-            if (preg_match('/^email\s+(.*)$/im', $line, $matches)) {
-                $data['email'] = trim(str_replace('Email', '', $line));
-            }
+            // if (preg_match('/^email\s+(.*)$/im', $line, $matches)) {
+            //     $data['email'] = trim(str_replace('Email', '', $line));
+            // }
             if (str_starts_with($line, 'ایمیل')) {
                 $data['email'] = trim(str_replace('ایمیل', '', $line));
             }
