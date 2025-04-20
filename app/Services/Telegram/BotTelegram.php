@@ -342,10 +342,10 @@ preg_match('/First Name\s+([^\n]+)/u', $text, $firstName);
 preg_match('/Last Name\s+([^\n]+)/u', $text, $lastName);
 preg_match('/Phone\s+([0-9]+)/', $text, $phonenum);
 
- if (str_starts_with($text, 'ایمیل')) { preg_match('/ایمیل\s+([^\s]+)/u', $text, $email); }
+if (preg_match('/^ایمیل\s+(.*)$/im', $text, $email)) { preg_match('/^ایمیل\s+(.*)$/im', $text, $email); }
  if (preg_match('/^email\s+(.*)$/im', $text, $email)) { preg_match('/^email\s+(.*)$/im', $text, $email); }
 
- 
+
 
 
 $data['wallet_id'] = $wallet[1] ?? '';
