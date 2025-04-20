@@ -354,6 +354,9 @@ $result = Http::get($api_url);
             if (preg_match('/^email\s+(.*)$/im', $line, $matches)) {
                 $data['email'] = trim(str_replace('Email', '', $line));
             }
+            if (str_starts_with($line, 'ایمیل')) {
+                $data['email'] = trim(str_replace('Email', '', $line));
+            }
         }
 
         return $data;
