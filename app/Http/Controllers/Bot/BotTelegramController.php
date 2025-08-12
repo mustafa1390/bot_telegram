@@ -57,7 +57,7 @@ class BotTelegramController extends Controller
 
 $botToken = $this->bot_token;
 $apiUrl = "https://api.telegram.org/bot{$botToken}";
- 
+
 
 // 1. Get updates from Telegram
 $response = file_get_contents($apiUrl . "/getUpdates");
@@ -71,6 +71,9 @@ if (!empty($updates['result'])) {
             // 3. Get caption if available
             $caption = $update['message']['caption'] ?? "(No caption)";
             echo "Caption: " . $caption . PHP_EOL;
+
+
+    BotLog::create(['text'=>$caption]);
 
             // 4. Get highest resolution photo (last array element)
             $photos = $update['message']['photo'];
