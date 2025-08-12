@@ -52,6 +52,48 @@ class BotTelegramController extends Controller
 
    }
 
+   public function fetch_update_caption_image(){
+  
+
+$botToken = $this->bot_token;
+$apiUrl = "https://api.telegram.org/bot{$botToken}";
+
+// 1. Get updates from Telegram
+$updates = json_decode(file_get_contents($apiUrl . "/getUpdates"), true);
+
+// 2. Check updates
+if (!empty($updates['result'])) {
+    foreach ($updates['result'] as $update) {
+        if (isset($update['message']['photo'])) {
+            // Caption
+            $caption = $update['message']['caption'] ?? "(No caption)";
+            echo "Caption: " . $caption . PHP_EOL;
+
+            // Get the highest resolution photo (last item in 'photo' array)
+            $photos = $update['message']['photo'];
+            $fileId = end($photos)['file_id'];
+
+            // 3. Get file path from Telegram
+            $fileInfo = json_decode(file_get_contents($apiUrl . "/getFile?file_id=" . $fileId), true);
+            if (isset($fileInfo['result']['file_path'])) {
+                $filePath = $fileInfo['result']['file_path'];
+
+                // 4. Download the image
+                $fileUrl = "https://api.telegram.org/file/bot{$botToken}/{$filePath}";
+                $fileName = basename($filePath);
+                file_put_contents($fileName, file_get_contents($fileUrl));
+
+                echo "Image downloaded: {$fileName}" . PHP_EOL;
+            }
+        }
+    }
+} else {
+    echo "No updates found.\n";
+}
+
+
+   }
+
    public function deleteWebhook(){
     $api_url = "https://api.telegram.org/bot".$this->bot_token."/deleteWebhook";
     $result = Http::get($api_url);
