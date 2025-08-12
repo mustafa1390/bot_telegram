@@ -18,7 +18,7 @@ class BotTelegramController extends Controller
     public function __construct()
     {
 
-        $this->bot_token='8382001075:AAGk_0KhRxpywq70GCPRGa3CMDvWGPQtv60';
+        $this->bot_token='7318110679:AAGulnwhChbYaHh-Ziva6FBayx4pFmkQiVk';
 
     }
 
@@ -170,7 +170,7 @@ class BotTelegramController extends Controller
    }
    public function set_webhook(){
 
-    $this->bot_token = '8382001075:AAGk_0KhRxpywq70GCPRGa3CMDvWGPQtv60';
+    $this->bot_token = '7318110679:AAGulnwhChbYaHh-Ziva6FBayx4pFmkQiVk';
     $url_webhook = 'https://alfa724.ir/telegram/url_webhookk';
     $api_url = "https://api.telegram.org/bot".$this->bot_token."/setWebhook?url=".$url_webhook;
 
