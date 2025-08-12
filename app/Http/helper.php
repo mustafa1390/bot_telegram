@@ -8,7 +8,7 @@ if(! function_exists('bot_1') ) {
     function bot_1( $method,$parm )
     {
 
-        $bot_token = '6815750639:AAHhrOI075qPJw1kAjxt7HHV-hnY5dIaLNA';
+        $bot_token = '7318110679:AAGulnwhChbYaHh-Ziva6FBayx4pFmkQiVk';
         $api_url = "https://api.telegram.org/bot".$bot_token."/getme";
 
         $API_URL='https://api.telegram.org/bot'.$bot_token.'/';
