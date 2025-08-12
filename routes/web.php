@@ -30,6 +30,7 @@ Route::prefix('telegram')->name('telegram.')->group(function () {
     Route::get('/set_webhook', [BotTelegramController::class, 'set_webhook'])->name('set_webhook');
     Route::get('/info_webhook', [BotTelegramController::class, 'info_webhook'])->name('info_webhook');
     Route::get('/get_update', [BotTelegramController::class, 'get_update'])->name('get_update');
+    Route::get('/deleteWebhook', [BotTelegramController::class, 'deleteWebhook'])->name('deleteWebhook');
     Route::get('/test_send', [BotTelegramController::class, 'test_send'])->name('test_send');
 
 });

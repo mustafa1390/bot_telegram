@@ -52,6 +52,17 @@ class BotTelegramController extends Controller
 
    }
 
+   public function deleteWebhook(){
+    $api_url = "https://api.telegram.org/bot".$this->bot_token."/deleteWebhook";
+    $result = Http::get($api_url);
+    $response = json_decode($result, true);
+    return $response;
+
+    echo '<br>';
+
+
+   }
+
 
    public function url_webhook(Request $request){
 
