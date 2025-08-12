@@ -19,7 +19,7 @@ class BotTelegram
     public function __construct()
     {
 
-        $this->bot_token='7318110679:AAGulnwhChbYaHh-Ziva6FBayx4pFmkQiVk';
+        $this->bot_token='8391942118:AAGPL5Qe_0Z3Ov0yFxY3QeKl-NWv7egmQmU';
 
     }
 
@@ -125,7 +125,7 @@ class BotTelegram
     public function inline_cl($data,$buton){
 
 
-        $bot_token = '7318110679:AAGulnwhChbYaHh-Ziva6FBayx4pFmkQiVk';
+        $bot_token = '8391942118:AAGPL5Qe_0Z3Ov0yFxY3QeKl-NWv7egmQmU';
 
         if($buton!='back'){
             $chat_id = $data->message->chat->id;
