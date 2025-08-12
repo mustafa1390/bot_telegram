@@ -67,12 +67,12 @@ $updates = json_decode($response, true);
 if (!empty($updates['result'])) {
     foreach ($updates['result'] as $update) {
 
-            $caption = $update['message']['caption'] ?? "(No caption)";
-            echo "Caption: " . $caption . PHP_EOL;
+            $text = $update['message']['text'] ?? "(No text)";
+            echo "Text: " . $text . PHP_EOL;
 
 
-    BotLog::create(['text'=>$caption]);
-    
+    BotLog::create(['text'=>$text]);
+
         if (isset($update['message']['photo'])) {
 
             // 3. Get caption if available
