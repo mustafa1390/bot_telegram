@@ -53,44 +53,46 @@ class BotTelegramController extends Controller
    }
 
    public function fetch_update_caption_image(){
-  
+
 
 $botToken = $this->bot_token;
 $apiUrl = "https://api.telegram.org/bot{$botToken}";
+ 
 
 // 1. Get updates from Telegram
-$updates = json_decode(file_get_contents($apiUrl . "/getUpdates"), true);
+$response = file_get_contents($apiUrl . "/getUpdates");
+$updates = json_decode($response, true);
 
-// 2. Check updates
+// 2. Loop through updates
 if (!empty($updates['result'])) {
     foreach ($updates['result'] as $update) {
         if (isset($update['message']['photo'])) {
-            // Caption
+
+            // 3. Get caption if available
             $caption = $update['message']['caption'] ?? "(No caption)";
             echo "Caption: " . $caption . PHP_EOL;
 
-            // Get the highest resolution photo (last item in 'photo' array)
+            // 4. Get highest resolution photo (last array element)
             $photos = $update['message']['photo'];
             $fileId = end($photos)['file_id'];
 
-            // 3. Get file path from Telegram
+            // 5. Get file path from Telegram
             $fileInfo = json_decode(file_get_contents($apiUrl . "/getFile?file_id=" . $fileId), true);
             if (isset($fileInfo['result']['file_path'])) {
                 $filePath = $fileInfo['result']['file_path'];
 
-                // 4. Download the image
+                // 6. Download image to local folder
                 $fileUrl = "https://api.telegram.org/file/bot{$botToken}/{$filePath}";
-                $fileName = basename($filePath);
-                file_put_contents($fileName, file_get_contents($fileUrl));
+                $localFile = __DIR__ . '/' . basename($filePath);
+                file_put_contents($localFile, file_get_contents($fileUrl));
 
-                echo "Image downloaded: {$fileName}" . PHP_EOL;
+                echo "Image saved locally as: " . basename($filePath) . PHP_EOL;
             }
         }
     }
 } else {
-    echo "No updates found.\n";
+    echo "No updates found." . PHP_EOL;
 }
-
 
    }
 
